@@ -40,7 +40,7 @@ As the week pass by, additional exercices will be periodically added to the code
 
 * open a terminal window
 
-* Move to the folder where you have cloned the git: `cd /path/to/appstat/AppStat2020_local/`
+* Move to the folder where you have cloned the git: `cd /path/to/appml/AppliedML2020`
 
 * Update the content by typing: `git pull`
 
