@@ -49,27 +49,15 @@ Move to your home folder by typing `cd`. Open a file named `.bashrc`, and add th
 Close your terminal and open a new one. When you type in `anaconda3`, your new anaconda environment should load. You are then ready to work on your notebooks.
 
 
-### installing the iminuit minimizer tool
-
-Open a new terminal, and load the anaconda environment by typing `anaconda3`. To install iminuit, type in the command: `conda install -c anaconda iminuit`. A prompt such as the one shown below will ask you to install the package, along with its dependencies (ie. additional software that iminuit needs to run properly)
-
-<details><summary>Click here for image </summary>
-<img src="../images/conda_install_iminuit.png"/>
-</details>
-
-
-Type in `y` and wait for the installation to complete. You should now be able to run the course notebooks.
-
-
 ### Clone the course repository
 
 * Open a __terminal window__.
 
 * If you don't have git installed on your laptop, install it by following [these instructions](https://gist.github.com/derhuerst/1b15ff4652a867391f03#file-linux-md)
 
-* Clone the Applied statistics repository using the command 
-`git clone https://github.com/AppliedStatisticsNBI/AppStat2020.git ./AppStat2020_local/`. 
- Feel free to choose another name for your folder
+* Clone the Applied ML repository using the command 
+`git clone https://https://github.com/troelspetersen/AppliedML2021 ./AppML2021_local/`. 
+ Feel free to choose another name for your folder, or just use "." if you want to use the same name (i.e. "AppliedML2021"), which is default/common.
 
 * You now have a local copy of the repository
 

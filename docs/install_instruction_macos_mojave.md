@@ -42,20 +42,10 @@ These instructions have been tested on a macbook pro from 2015 running the Mojav
   `anaconda3`
 
 
-### Install iminuit
-
-* Open a new terminal. Load the anaconda environment by typing in `anaconda3`. Then type in the command:
-
-  `conda install iminuit`
-
-* Type `y` once the installer finds the dependencies that will be installed. You should now be able to run the applied statistics course exercices.
-
-
 ### Clone the Applied Statistics Repository
 
 *  In a folder of your choice, run the command for cloning the repository:
 
-  `git clone https://github.com/AppliedStatisticsNBI/AppStat2020.git .`
-
+  `git clone https://https://github.com/troelspetersen/AppliedML2021 .`
 
 To run a notebook, make sure you activate your anaconda environment by typing `anaconda3`. You are now set to work on the notebooks!
