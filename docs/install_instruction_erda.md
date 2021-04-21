@@ -30,8 +30,8 @@ If you do not wish to do so, you can still access the course content by manually
 
 
 
-<details><summary>To spawn the correct environment for the course, select the option <b>Statistics Notebook with Python</b> </summary>
-<img src="/images/ERDA_step3.png"
+<details><summary>To spawn the correct environment for the course, select the option <b>Tensorflow Notebook with Python</b> </summary>
+<img src="/images/ERDA_step3_AppML.png"
 	title="ERDA main menu"/>
 </details>
 
