@@ -52,7 +52,7 @@ You should now have a terminal window opened in your screen. If you type in the 
 
 
 Once you are in your __work__ folder, make yourself a local copy of the code repository by typing the command
-`git clone https://https://github.com/troelspetersen/AppliedML2021 .`
+`git clone https://github.com/troelspetersen/AppliedML2021 .`
 
 If you list the content of your __work__ directory, you should now see a local copy of the code appear on your machine.
 
