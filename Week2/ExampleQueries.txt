@@ -1,0 +1,212 @@
+#
+# query into SDSS SpecPhoto and AllWISE:
+# what does it do?
+#
+
+SELECT TOP 10000
+ S.objid as ID, S.ra as ra, S.dec as dec, pho.lnLStar_i as istar, S.modelMag_g as gmag, S.modelMag_r as rmag, S.modelMag_i as imag, S.modelMag_z as zmag, W.w1mpro as W1, W.w2mpro as W2, S.psfMag_g as psfgmag, S.psfMag_r as psfrmag, S.psfMag_i as psfimag, W.w3mpro as W3, W.w3sigmpro as W3err, W.j_m_2mass as J, W.j_msig_2mass as Jerr, W.h_m_2mass as H, W.h_msig_2mass as Herr, W.k_m_2mass as K, W.k_msig_2mass as Kerr,  S.modelMag_u as umag, spe.z as zs into mydb.QSOprop5
+ from SpecPhoto as spe
+ join photoTag as S on spe.objid = S.objid
+ join wise_xmatch as X on S.objid = X.sdss_objid
+ join wise_allsky as W on X.wise_cntr = W.cntr
+ join PhotoObjAll as pho on S.objid = pho.objid 
+where (S.nchild = 0
+  and spe.class = 'QSO'
+  )
+
+# ID:	unique object ID in the database
+# ra:	right ascension (coordinate)
+# dec:	declination (coordinate)
+# istar:	log-likelihood that the object is point-like, given by the pipeline run on the images
+# gmag:	 magnitude in g-band
+# rmag:	magnitude in r-band
+# imag:	magnitude in i-band
+# zmag:	magnitude in z-band
+# W1:	magnitude in W1-band (from AllWISE)
+# W2:	magnitude in W2-band (from AllWISE)
+# psfgmag:	PSF magnitude in g-band (i.e. the best-fit magnitude of a point-like object fit to the pixel data)
+# psfrmag:	PSF magnitude in r-band (i.e. the best-fit magnitude of a point-like object fit to the pixel data)
+# psfimag:	PSF magnitude in i-band (i.e. the best-fit magnitude of a point-like object fit to the pixel data)
+# W3:	magnitude in W3-band (from AllWISE)
+# W3err:	uncertainty on magnitude in W1-band (from AllWISE)
+# J:	magnitude in J-band (from 2MASS, in AllWISE)
+# Jerr:	uncertainty on J
+# H:	magnitude in J-band (from 2MASS, in AllWISE)
+# Herr:	uncertainty on H
+# K:	magnitude in J-band (from 2MASS, in AllWISE)
+# Kerr:	uncertainty on K
+# umag: magnitude in u-band	
+# zs: "true" redshift
+
+
+#
+# SDSS public query interface: http://skyserver.sdss.org/dr16/en/tools/search/sql.aspx
+# SDSS Schema browser: http://skyserver.sdss.org/dr16/en/help/browser/browser.aspx#&&history=description+PhotozErrorMap+I
+# Other info on SDSS data access: https://www.sdss.org/dr16/data_access/
+#
+
+#
+# astroquery example 1 from Zoe:
+#
+#
+from astroquery.sdss import SDSS
+import pandas as pd
+import time as time
+
+querytext="select top 1000  \
+  z, ra, dec, bestObjID, plate , class, zErr  \
+  from specObj \
+  where 1.0 >z   and \
+  z >0 and \
+  zWarning = 0"
+  
+def query ():
+  start=time.time()
+​
+  query = querytext
+  res = SDSS.query_sql(query)
+​
+  df=res.to_pandas()
+  print(len(df))
+  print(df.head())
+  print(df.columns)
+​
+​
+  end=time.time()
+  tt=end - start
+  print("time elapsed:", tt)
+​
+query ()
+
+#
+# astroquery example 1 from Sofie: IRSA example
+#
+#
+import numpy as np
+from astroquery.irsa import Irsa
+import astropy.units as u
+import astropy.coordinates as coord
+​
+#Coordinates to query around
+ra_in  = 155 #deg
+dec_in = 49  #deg
+​
+#Maximum distance
+max_dist = 10 #arcsec
+​
+#Catalog
+catalog = "ptf_lightcurves"
+​
+#The query
+table = Irsa.query_region(coord.SkyCoord(ra_in,dec_in,unit=(u.deg,u.deg)),
+                          catalog = catalog, spatial='Cone',
+                          radius  = max_dist * u.arcsec)
+​
+print ("Table header:\n",table.colnames)
+print ("\nThe table:\n",table)
+​
+### Extract parameters from the output table ###
+​
+#Coordinates
+ra_out  = np.array(table['ra'])  #deg
+dec_out = np.array(table['dec']) #deg
+​
+#Object ID's
+oids = np.array(table['oid'],dtype='int64')
+​
+print ("ra",ra_out)
+
+#
+# astroquery example 2 from Sofie: VizieR example
+#
+#
+from astroquery.vizier import Vizier
+import astropy.units as u
+import astropy.coordinates as coord
+​
+#Coordinates to query around
+ra_in  = 155.29594 #deg
+dec_in = 49.2251   #deg
+​
+#Maximum distance
+max_dist = 10 #arcsec
+​
+#Catalog
+catalog = "II/349/ps1"
+​
+#The query
+vquery = Vizier(columns=['objID', 'RAJ2000', 'DEJ2000',
+                         'gmag', 'e_gmag',
+                         "+_r"])
+​
+field = coord.SkyCoord(ra_in, dec_in,
+                       unit=(u.deg, u.deg),
+                       frame='icrs')
+​
+vquery.query_region(field,width=(max_dist*u.arcsec),
+                    catalog=catalog)
+​
+​
+if len(vquery.table)>0:
+    table = vquery.table[0]
+    
+    print ("Table header:\n",table.colnames)
+    print ("\nThe table:\n",table)
+	
+    ### Extract parameters from the output table ###
+	
+    #Object ID
+    oids    = table['objID'][0]
+    
+    #Coordinates
+    ra_out  = table['RAJ2000'][0]
+    dec_out = table['DEJ2000'][0]
+    
+    #g magnitude
+    g       = table['gmag'][0]
+    e_g     = table['e_gmag'][0]
+    
+    #Distance from input coordinates
+    r     = table['_r'][0]
+    
+    print ("g:",g,"+-",e_g)
+else:
+    print ("No sources found")
+
+
+#
+#
+# astroquery example 2 from Zoe
+#
+#
+import pandas as pd
+import astropy.units as u
+from astroquery.xmatch import XMatch
+import numpy as np
+import time as time
+​
+​
+start=time.time()
+##cat1 is our own data on the computer, it could be changed to a dataset from one of the vizier cataloges
+catalog1=open('../PRIMUS/PRIMUS_2013_zcat_v1.csv')
+​
+##cat2
+catalog2='vizier:II/328/allwise'
+​
+##search in this radius
+Radius=5 * u.arcsec
+​
+​
+table = XMatch.query(cat1=catalog2,
+                     cat2=catalog2,
+                     max_distance=Radius, colRA1='RA',
+                     colDec1='DEC', colRA2='ra',
+                     colDec2='dec')
+​
+df_xmat = pd.DataFrame(np.array(table))
+# df_xmat.to_csv("../PRIMUS/xmatch.csv")
+print(df_xmat.head())
+print(df_xmat.columns)
+​
+end=time.time()
+print("Query took",str(end-start) ,"seconds to fetch the data")
